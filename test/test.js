@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var parser = require('../lib');
+var xmljs = require('../index');
 var assert = require('assert');
 
 var fixturesPath = './fixtures';
@@ -14,21 +14,21 @@ fs.readdir(fixturesPath, function(err, files) {
             var basename = path.basename(file, '.xml');
 
             var data = fs.readFileSync(fixturesPath + '/' + file);
-            var result = parser.toJson(data, {reversible: true});
+            var options = {reversible: true}
 
             var  data2 =  fs.readFileSync(fixturesPath + '/' + file);
             if (file.indexOf('spacetext') >= 0) {
-                result = parser.toJson(data2, {trim: false, coerce: false});
+                options = {trim: false, coerce: false};
             } else if (file.indexOf('coerce') >= 0) {
-                result = parser.toJson(data2, {coerce: false});
+                options = {coerce: false};
             } else if (file.indexOf('domain') >= 0) {
-                result = parser.toJson(data2, {coerce: false});
+                options = {coerce: false};
             } else if (file.indexOf('large') >= 0) {
-                result = parser.toJson(data2, {coerce: false, trim: true, sanitize: false});
+                options = {coerce: false, trim: true, sanitize: false};
             } else if (file.indexOf('array-notation') >= 0) {
-                result = parser.toJson(data2, {arrayNotation: true});
+                options =  {arrayNotation: true};
             } else {
-                result = parser.toJson(data2, {trim: false});
+                options =  {trim: false};
             }
 
             var jsonFile = basename + '.json';
@@ -37,28 +37,17 @@ fs.readdir(fixturesPath, function(err, files) {
             if (expected) {
                 expected = expected.trim();
             }
+
+            xmljs(options,function(err,d) {
+                assert.deepEqual(JSON.stringify(d),expected,jsonFile + ' and ' + file + ' are different');
+            }).end(data)
+
             /*console.log(result);
             console.log('============ Expected ===============');
             console.log(expected)*/
-            assert.deepEqual(result, expected, jsonFile + ' and ' + file + ' are different');
+            //assert.deepEqual(result, expected, jsonFile + ' and ' + file + ' are different');
             console.log('[xml2json: ' + file + '->' + jsonFile + '] passed!');
-        } else if( ext == '.json') {
-            var basename = path.basename(file, '.json');
-            if (basename.match('reversible')) {
-                var data = fs.readFileSync(fixturesPath + '/' + file);
-                var result = parser.toXml(data);
-
-                var xmlFile = basename.split('-')[0] + '.xml';
-                var expected = fs.readFileSync(fixturesPath + '/' + xmlFile) + '';
-
-                if (expected) {
-                    expected = expected.trim();
-                }
-                //console.log(result + '<---');
-                assert.deepEqual(result, expected, xmlFile + ' and ' + file + ' are different');
-                console.log('[json2xml: ' + file + '->' + xmlFile + '] passed!');
-            }
-        }
+        } 
     }
 });
 
