@@ -1,24 +1,15 @@
 var Process = require('./lib/xml2json'),
 	expat = require('node-expat');
-
-/**
- * Simple sanitization map. It is not intended to sanitize
- * malicious element values.
- */
-var sanitationChars = {
-                '<': '&lt;',
-                '>': '&gt;',
-                '(': '&#40;',
-                ')': '&#41;',
-                '#': '&#35;',
-                '&': '&amp;',
-                '"': '&quot;',
-                "'": '&apos;' };
  
 var defaults = {
-  object: false,
-  reversible: false,
-  coerce: function(value) {
+  /**
+   * For every value encountered (attribute or text value), this conversion 
+   * function will be called with that value along with the name of the 
+   * attribute this value belongs to and the containing element name. In the 
+   * case of text values, the attributeName will be equal to options.textKey.
+   */
+  convert: function(value, attributeName, elementName) {
+    /*
     var num = Number(value);
     if (!isNaN(num)) {
         return num;
@@ -30,21 +21,14 @@ var defaults = {
     if (_value == 'false') {
         return false;
     }
+    */
     return value;
   },
-  sanitize: function(value) {
-    if (typeof value !== 'string') {
-        return value;
-    }
-    Object.keys(sanitationChars).forEach(function(key) {
-        value = value.replace(key, sanitationChars[key]);
-    });
-    return value;
-  }
   trim: true,
   arrayNotation: false,
   textKey: '$text',
-  nameKey: '$name'
+  nameKey: '$name',
+  attrsKey: '$'
 };
 
 module.exports = function (options,callback) {
