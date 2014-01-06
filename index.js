@@ -1,12 +1,50 @@
 var Process = require('./lib/xml2json'),
 	expat = require('node-expat');
 
+/**
+ * Simple sanitization map. It is not intended to sanitize
+ * malicious element values.
+ */
+var sanitationChars = {
+                '<': '&lt;',
+                '>': '&gt;',
+                '(': '&#40;',
+                ')': '&#41;',
+                '#': '&#35;',
+                '&': '&amp;',
+                '"': '&quot;',
+                "'": '&apos;' };
+ 
 var defaults = {
   object: false,
   reversible: false,
-  coerce: true,
-  sanitize: true,
-  trim: true
+  coerce: function(value) {
+    var num = Number(value);
+    if (!isNaN(num)) {
+        return num;
+    }
+    var _value = value.toLowerCase();
+    if (_value == 'true') {
+        return true;
+    }
+    if (_value == 'false') {
+        return false;
+    }
+    return value;
+  },
+  sanitize: function(value) {
+    if (typeof value !== 'string') {
+        return value;
+    }
+    Object.keys(sanitationChars).forEach(function(key) {
+        value = value.replace(key, sanitationChars[key]);
+    });
+    return value;
+  }
+  trim: true,
+  arrayNotation: false,
+  textKey: '$text',
+  nameKey: '$name'
 };
 
 module.exports = function (options,callback) {

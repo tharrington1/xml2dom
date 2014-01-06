@@ -7,10 +7,11 @@
     "main": "index", 
     "contributors":[ 
         {"name": "Camilo Aguilar", "email": "camilo.aguilar@gmail.com"},
-        {"name": "Ziggy Jonsson", "email": "ziggy.jonsson.nyc@gmail.com"}
+        {"name": "Ziggy Jonsson", "email": "ziggy.jonsson.nyc@gmail.com"},
+        {"name": "Tim Harrington", "email": "timharrington7@gmail.com"}
     ],
     "dependencies": {
        "node-expat": "2.0.0"
-    },
+    }
 }
 
