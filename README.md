@@ -25,6 +25,8 @@ parser(options,function(err, obj) {
 }).end("<foo>bar</foo>");
 ```
 
+Since the returned object contains complete information about the original object structure, it is very amenable to use in a selector library (e.g. CSS Selector or XPath).
+
 For further information see the [README.md](https://github.com/ZJONSSON/xmls2json.git/blob/master/README.md) of the original repo.
 
 (The MIT License)
