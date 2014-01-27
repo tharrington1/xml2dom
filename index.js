@@ -28,6 +28,7 @@ var defaults = {
   arrayNotation: false,
   textKey: '$text',
   nameKey: '$name',
+  parentKey: '$parent',
   attrsKey: '$'
 };
 
